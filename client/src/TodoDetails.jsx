@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
-function TodoDetails() {
+export default function TodoDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [todo, setTodo] = useState(null);
@@ -15,6 +15,7 @@ function TodoDetails() {
         return res.json();
       })
       .then((data) => {
+        console.log("Полученные данные:", data);
         setTodo(data);
         setLoading(false);
       })
@@ -29,7 +30,7 @@ function TodoDetails() {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        title: todo.title,
+        text: todo.text,
         description: todo.description,
         completed: todo.completed,
       }),
@@ -55,8 +56,8 @@ function TodoDetails() {
       <label>Название:</label>
       <input
         type="text"
-        value={todo.title}
-        onChange={(e) => setTodo({ ...todo, title: e.target.value })}
+        value={todo.text}
+        onChange={(e) => setTodo({ ...todo, text: e.target.value })}
         style={{ width: "100%", marginBottom: "10px" }}
       />
 
@@ -85,5 +86,3 @@ function TodoDetails() {
     </div>
   );
 }
-
-export default TodoDetails;

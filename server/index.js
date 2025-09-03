@@ -30,19 +30,20 @@ app.get("/todos", async (req, res) => {
   const todos = await db.all("SELECT * FROM todos");
   res.json(todos);
 });
-// Тут может быть собака зарыта
-app.get("/todos/:id", (req, res) => {
-  const { id } = req.params;
-  db.get("SELECT * FROM todos WHERE id = ?", [id], (err, row) => {
-    if (err) {
-      console.error("SQL error:", err.message);
-      return res.status(500).json({ error: err.message });
-    }
+// Получить одну задачу (детали, описание задачи)
+app.get("/todos/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const db = await dbPromise;
+    const row = await db.get("SELECT * FROM todos WHERE id = ?", id);
     if (!row) {
       return res.status(404).json({ error: "Task not found" });
     }
     res.json(row);
-  });
+  } catch (err) {
+    console.error("SQL error:", err.message);
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // Добавить задачу
@@ -56,16 +57,17 @@ app.post("/todos", async (req, res) => {
   res.json({ id: result.lastID, text, description, completed: 0 });
 });
 
-// Переключить статус задачи и редактировать
+// Переключить статус задачи и редактировать(проблема может быть тут)
 app.put("/todos/:id", async (req, res) => {
-  const { id, text, description } = req.params;
-  const { completed } = req.body;
+  const { id } = req.params;
+  const { completed, text, description } = req.body;
   const db = await dbPromise;
   await db.run(
     "UPDATE todos SET completed = ?, text = ?, description = ? WHERE id = ?",
     [completed, text, description, id]
   );
-  res.json({ completed, text, description, id });
+  const updated = await db.get("SELECT * FROM todos WHERE id = ?", id);
+  res.json(updated);
 });
 
 // Удалить задачу
