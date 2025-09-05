@@ -30,6 +30,29 @@ app.get("/todos", async (req, res) => {
   const todos = await db.all("SELECT * FROM todos");
   res.json(todos);
 });
+
+//Маршрут для получения количества задач: всего, активных и выполненных
+app.get("/todos/counts", async (req, res) => {
+  try {
+    const db = await dbPromise;
+    const total = await db.get("SELECT COUNT(completed) as count FROM todos");
+    const active = await db.get(
+      "SELECT COUNT(completed) as count FROM todos WHERE completed = 0"
+    );
+    const completed = await db.get(
+      "SELECT COUNT(completed) as count FROM todos WHERE completed = 1"
+    );
+    res.json({
+      total: total.count,
+      active: active.count,
+      completed: completed.count,
+    });
+  } catch (err) {
+    console.error("SQL error:", err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Получить одну задачу (детали, описание задачи)
 app.get("/todos/:id", async (req, res) => {
   try {
@@ -57,7 +80,7 @@ app.post("/todos", async (req, res) => {
   res.json({ id: result.lastID, text, description, completed: 0 });
 });
 
-// Переключить статус задачи и редактировать(проблема может быть тут)
+// Переключить статус задачи и редактировать
 app.put("/todos/:id", async (req, res) => {
   const { id } = req.params;
   const { completed, text, description } = req.body;

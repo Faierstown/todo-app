@@ -5,12 +5,27 @@ export default function TodoList() {
   const [todos, setTodos] = useState([]);
   const [text, setText] = useState("");
   const [description, setDescription] = useState("");
+  const [counts, setCounts] = useState({ total: 0, active: 0, completed: 0 });
 
   useEffect(() => {
     fetch("http://localhost:5000/todos")
       .then((res) => res.json())
       .then((data) => setTodos(data));
   }, []);
+
+  useEffect(() => {
+    const fetchCounts = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/todos/counts");
+        const data = await res.json();
+        setCounts(data);
+      } catch (err) {
+        console.error("Ошибка при загрузке статистики:", err);
+      }
+    };
+
+    fetchCounts();
+  }, [todos]);
 
   const addTodo = async () => {
     if (!text.trim()) return;
@@ -54,8 +69,6 @@ export default function TodoList() {
     setTodos(todos.filter((t) => t.id !== id));
   };
 
-  const activeTodos = todos.filter((todo) => todo.completed === 0).length;
-
   return (
     <div className="container">
       <div style={{ maxWidth: 500, margin: "0 auto", padding: 20 }}>
@@ -98,7 +111,9 @@ export default function TodoList() {
           <button>✅ Выполненные задачи</button>
         </Link>
         <p>
-          <strong>📌 Активных задач:</strong> {activeTodos}
+          <strong>🧩 Всего:</strong> {counts.total}
+          <strong>🧠 Выполнено:</strong> {counts.completed}
+          <strong>📌 Предстоит сделать:</strong> {counts.active}
         </p>
       </div>
     </div>
