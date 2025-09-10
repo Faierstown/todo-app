@@ -1,0 +1,96 @@
+.todo {
+  padding: 10px;
+  margin: 8px 0;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.status0 {
+  background-color: #808080;
+  color: #333;
+}
+
+.status1 {
+  background-color: #dceefb;
+  color: #2c7a7b;
+}
+
+.status2 {
+  background-color: #032f65;
+  color: #2b6cb0;
+}
+
+.status3 {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.status4 {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.status5 {
+  background-color: #ffd700;
+  color: white;
+  font-weight: bold;
+}
+.banned {
+  background-color: #721c24;
+  color: #000;
+  font-weight: bolder;
+  font-size: 1.1em;
+}
+.Agree {
+  padding: 10px 20px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.6s ease;
+}
+
+.Agree:hover {
+  background-color: #218838;
+}
+
+.Cancel {
+  margin-right: 0;
+  margin-left: auto;
+  padding: 10px 20px;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.Cancel:hover {
+  background-color: #a71d2a;
+}
+.title {
+  font-weight: bold;
+  font-size: 1.3em;
+  font-family: Arial, Helvetica, sans-serif;
+  text-decoration: none;
+  color: black;
+}
+
+.meta {
+  font-size: 1em;
+  color: #666;
+  margin-top: 5px;
+  text-align: left;
+  font-family: "Times New Roman", Times, serif;
+}
+
+.actions {
+  margin-top: 8px;
+  display: flex;
+  gap: 8px;
+}

@@ -20,7 +20,10 @@ const dbPromise = await open({
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     text TEXT,
     description TEXT,
-    completed INTEGER
+    completed INTEGER,
+    created_at TEXT,
+      due_date TEXT,
+      status INTEGER 
   )`);
 })();
 
@@ -53,6 +56,18 @@ app.get("/todos/counts", async (req, res) => {
   }
 });
 
+//Получение выполненных задач для CompletedTodos
+app.get("/todos/completed", async (req, res) => {
+  try {
+    const db = await dbPromise;
+    const todos = await db.all("SELECT * FROM todos WHERE completed = 1");
+    res.json(todos);
+  } catch (err) {
+    console.error("SQL error:", err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Получить одну задачу (детали, описание задачи)
 app.get("/todos/:id", async (req, res) => {
   try {
@@ -71,23 +86,32 @@ app.get("/todos/:id", async (req, res) => {
 
 // Добавить задачу
 app.post("/todos", async (req, res) => {
-  const { text, description } = req.body;
+  const { text, description, due_date, status } = req.body;
+  const created_at = new Date().toISOString();
   const db = await dbPromise;
   const result = await db.run(
-    "INSERT INTO todos (text, description, completed) VALUES (?, ?, ?)",
-    [text, description, 0]
+    "INSERT INTO todos (text, description, completed, created_at, due_date, status) VALUES (?, ?, ?,?,?,?)",
+    [text, description, 0, created_at, due_date, status]
   );
-  res.json({ id: result.lastID, text, description, completed: 0 });
+  res.json({
+    id: result.lastID,
+    text,
+    description,
+    completed: 0,
+    created_at,
+    due_date: due_date || null,
+    status,
+  });
 });
 
 // Переключить статус задачи и редактировать
 app.put("/todos/:id", async (req, res) => {
   const { id } = req.params;
-  const { completed, text, description } = req.body;
+  const { completed, text, description, due_date, status } = req.body;
   const db = await dbPromise;
   await db.run(
-    "UPDATE todos SET completed = ?, text = ?, description = ? WHERE id = ?",
-    [completed, text, description, id]
+    "UPDATE todos SET completed = ?, text = ?, description = ?, due_date=?, status=? WHERE id = ?",
+    [completed, text, description, due_date, status, id]
   );
   const updated = await db.get("SELECT * FROM todos WHERE id = ?", id);
   res.json(updated);

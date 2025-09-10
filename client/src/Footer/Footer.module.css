@@ -1,0 +1,77 @@
+.footer {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #4a90e2;
+  color: white;
+  padding: 12px 24px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+.link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: white;
+  font-size: 1.5rem;
+  transition: transform 0.3s ease, color 0.3s ease;
+  text-decoration: none;
+}
+
+.link:hover {
+  color: #ffce00;
+  transform: scale(1.2);
+}
+
+.active {
+  border-bottom: 2px solid white;
+  color: goldenrod;
+}
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+a {
+  text-decoration: none; /* Убираем подчеркивание */
+  color: #007bff;
+  font-weight: bold;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.h1 {
+  font-family: Arial, Helvetica, sans-serif;
+  text-align: left;
+}
+
+.linkList {
+  display: flex;
+  flex-direction: column; /* теперь вертикально */
+  align-items: center;
+  gap: 12px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.linkItem {
+  width: fit-content;
+}
+
+.icon {
+  vertical-align: middle;
+}
+
+.ariaLabel {
+  font-size: 0.9rem;
+  margin-top: 4px;
+}

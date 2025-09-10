@@ -8,6 +8,15 @@ export default function TodoDetails() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const statusLabels = [
+    "Необязательная",
+    "Второстепенная",
+    "Обычная",
+    "Приоритетная",
+    "Срочная",
+    "Макс. приоритет",
+  ];
+
   useEffect(() => {
     fetch(`http://localhost:5000/todos/${id}`)
       .then((res) => {
@@ -33,6 +42,8 @@ export default function TodoDetails() {
         text: todo.text,
         description: todo.description,
         completed: todo.completed,
+        due_date: todo.due_date,
+        status: todo.status,
       }),
     })
       .then((res) => {
@@ -76,6 +87,28 @@ export default function TodoDetails() {
         />
         Выполнено
       </label>
+
+      <label>
+        <input
+          type="datetime-local"
+          value={todo.due_date}
+          onChange={(e) => setTodo({ ...todo, due_date: e.target.value })}
+        />{" "}
+        Дедлайн
+      </label>
+
+      <select
+        value={todo.status}
+        onChange={(e) => setTodo({ ...todo, status: e.target.value })}
+      >
+        <option value={0}>Необязательная</option>
+        <option value={1}>Второстепенная</option>
+        <option value={2}>Обычная</option>
+        <option value={3}>Приоритетная</option>
+        <option value={4}>Срочная</option>
+        <option value={5}>Макс. приоритет</option>
+      </select>
+      <p>🔥 Приоритет: {statusLabels[todo.status] ?? "Неизвестно"}</p>
 
       <div style={{ marginTop: "20px" }}>
         <button onClick={handleSave} style={{ marginRight: "10px" }}>

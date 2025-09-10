@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import style from "./button.module.css";
+import AddTodo from "./TodoListComponents/AddTodo";
+import TodoItem from "./TodoItem/TodoItem";
 export default function TodoList() {
   const [todos, setTodos] = useState([]);
-  const [text, setText] = useState("");
-  const [description, setDescription] = useState("");
   const [counts, setCounts] = useState({ total: 0, active: 0, completed: 0 });
 
   useEffect(() => {
@@ -27,20 +26,6 @@ export default function TodoList() {
     fetchCounts();
   }, [todos]);
 
-  const addTodo = async () => {
-    if (!text.trim()) return;
-    const res = await fetch("http://localhost:5000/todos", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text, description }),
-    });
-
-    const newTodo = await res.json();
-    setTodos([...todos, newTodo]);
-    setText("");
-    setDescription("");
-  };
-
   const toggleTodo = async (todo) => {
     const res = await fetch(`http://localhost:5000/todos/${todo.id}`, {
       method: "PUT",
@@ -49,6 +34,8 @@ export default function TodoList() {
         text: todo.text,
         description: todo.description,
         completed: todo.completed ? 0 : 1,
+        due_date: todo.due_date,
+        status: todo.status,
       }),
     });
 
@@ -69,53 +56,36 @@ export default function TodoList() {
     setTodos(todos.filter((t) => t.id !== id));
   };
 
+  //Тут у нас пропс
+  const handleAddTodo = (newTodo) => {
+    setTodos([...todos, newTodo]);
+  };
+
   return (
     <div className="container">
-      <div style={{ maxWidth: 500, margin: "0 auto", padding: 20 }}>
-        <h1>📝 To-Do List</h1>
-        <input
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          placeholder="Новая задача..."
-        />
-        <button onClick={addTodo}>Добавить</button>
+      <AddTodo onAdd={handleAddTodo} />
 
-        <ul>
-          <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Описание задачи..."
-          />
-          {todos
-            .filter((todo) => todo.completed === 0)
-            .map((todo) => (
-              <li key={todo.id}>
-                <Link to={`/todo/${todo.id}`}>{todo.text}</Link>
-                <button
-                  className={style.Cancel}
-                  onClick={() => deleteTodo(todo.id)}
-                >
-                  ❌
-                </button>
-                <button
-                  className={style.Agree}
-                  onClick={() => toggleTodo(todo)}
-                >
-                  ✅
-                </button>
-              </li>
-            ))}
-        </ul>
-        <Link to="/completed">
-          {" "}
-          <button>✅ Выполненные задачи</button>
-        </Link>
-        <p>
-          <strong>🧩 Всего:</strong> {counts.total}
-          <strong>🧠 Выполнено:</strong> {counts.completed}
-          <strong>📌 Предстоит сделать:</strong> {counts.active}
-        </p>
-      </div>
+      <ul>
+        {todos
+          .filter((todo) => todo.completed === 0)
+          .map((todo) => (
+            <TodoItem
+              key={todo.id}
+              todo={todo}
+              deleteTodo={deleteTodo}
+              toggleTodo={toggleTodo}
+            />
+          ))}
+      </ul>
+      <Link to="/completed">
+        {" "}
+        <button>✅ Выполненные задачи</button>
+      </Link>
+      <p>
+        <strong>🧩 Всего:</strong> {counts.total}
+        <strong>🧠 Выполнено:</strong> {counts.completed}
+        <strong>📌 Предстоит сделать:</strong> {counts.active}
+      </p>
     </div>
   );
 }

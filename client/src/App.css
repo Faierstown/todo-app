@@ -1,7 +1,7 @@
 #root {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 2rem;
+  width: 100%;
+  margin: 0;
+  padding: 0;
   text-align: center;
 }
 
@@ -23,8 +23,9 @@ body {
 .container {
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
-  max-width: 1000px;
-  margin: 50px auto;
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
   padding: 30px;
   border-radius: 15px;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
@@ -106,4 +107,10 @@ li p {
   margin: 5px 0 0;
   font-size: 14px;
   color: #555;
+}
+.page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 30px;
+  box-sizing: border-box;
 }

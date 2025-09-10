@@ -8,16 +8,26 @@ export default function CompletedTodos() {
   const [text, setText] = useState("");
   const [description, setDescription] = useState("");
 
+  const statusLabels = [
+    "Необязательная",
+    "Второстепенная",
+    "Обычная",
+    "Приоритетная",
+    "Срочная",
+    "Макс. приоритет",
+  ];
+
   useEffect(() => {
-    fetch("http://localhost:5000/todos")
+    fetch("http://localhost:5000/todos/completed")
       .then((res) => res.json())
       .then((data) => {
-        const completed = data.filter((todo) => todo.completed == 1);
+        const completed = data;
         setTodos(completed);
       });
   }, []);
 
   if (todos.length === 0) return <p>Нет выполненных задач</p>;
+
   const backTodo = async (todo) => {
     const updaterCompleted = todo.completed === 1 ? 0 : 1;
     const res = await fetch(`http://localhost:5000/todos/${todo.id}`, {
@@ -29,6 +39,7 @@ export default function CompletedTodos() {
         completed: updaterCompleted,
       }),
     });
+
     if (!res.ok) {
       alert("Ошибка при обновлении задачи");
       return;
@@ -50,6 +61,17 @@ export default function CompletedTodos() {
           .map((todo) => (
             <li key={todo.id}>
               {todo.text} — {todo.description}
+              <div style={{ fontSize: "0.85em", color: "#ccc" }}>
+                ⏰{" "}
+                {todo.due_date
+                  ? new Date(todo.due_date).toLocaleString()
+                  : "Без срока"}{" "}
+                |🔥Приоритет: {statusLabels[todo.status] ?? "Неизвестно"}
+                Дата создания:{" "}
+                {todo.created_at
+                  ? new Date(todo.created_at).toLocaleString("ru-RU")
+                  : "—"}
+              </div>
               <button onClick={() => backTodo(todo)}>Возобновить</button>
             </li>
           ))}
